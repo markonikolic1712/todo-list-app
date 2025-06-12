@@ -1,0 +1,612 @@
+
+
+
+kreiranje vue aplikacije sa CDN linkom:
+1. u head u index.html se kopira <script src="https://cdn.jsdelivr.net/npm/vue@2.7.14"></script>
+	- u kursu se koristi <script src="https://unpkg.com/vue@3.0.2"></script> 
+2. u index.html se kreiraju dva tag-a
+	<div id="app"></div>	- u ovaj div ce biti injectovana vue aplikacija. Kada korisnik klikne ili sl. na div onda vue aplikacija reaguje na to
+    <script src="app.js"></script>	- u fajlu app.js je kod bue alikacije
+3. fajl app.js	- JavaScript kod
+
+// objekat unutar Vue.createApp(); je root komponenta i to je objekat. U ovom objekto se definise template, funkcije itd.
+const app = Vue.createApp({
+  //   template: '<h2>I am a template</h2>',
+  // data() je funkcija koja vraca podatke koji se prikazuju u template. Ti podaci u template-u su dostupni kao varijable i mogu dinamicki da se menjaju
+  // za output vrednosti se koristi {{ }}. {{}} se koristi samo kada se radi output vrtednosti u browser
+  // za prikazivanje HTML elementa se koristi v-if ili v-show. Kada se koristi v-if element se stilizacijom samo sakriva a kada se koristi v-show html element se potpuno uklanja iz dom-a.
+  // za iteraciju kroz kolekciju podataka u html-u se koristi v-for
+
+  // attribute binding - <a :href="url">Best website</a> sa dve tacke se vrednost atributa vezuje za varijablu koja se salje iz app.js
+  /*
+  dynamic css classes - css klasa moze da se menja na osnovu varijable koja dolazi iz app.css. U varijabli isFav se salje true ili false i no osnovu toga se odredjuje stil. Bind klase se radi sa :class="{}" a u "" se prosledjuje objekat koji ima key:value parove. 
+  :class="{ fav: book.isFav }" - book.isFav sadrzi true/false podatak pa ako je true primenjuje se klasa fav a ako je false ne primenjuje se
+
+  toggling favs - dodaje se click event koji u app.js salje li tj. book na koji je kliknuto. U app.js se uzima indeks tog book-a u this.books i menja se isFav. Ovime se ukljucuje i iskljucuje klasa fav u html <li>. 
+  */
+
+  /*
+  computer properties - sa computed property-em odredjujemo data property u komponenti a taj data property zavisi od podataka u komponenti.
+  */
+  
+  // computed property - imamo niz koji sadrzi knjige koje je odabrao korisnik klikom a to su one koje imaju css klasu fav. Kreira se metoda filteredBooks() koja vraca vrednost kojoj mozemo da pristupimo u HTML-u i koristimo je. U html do vrednosti dolazimo sa {{ filteredBooks }}
+  // computed property zavisi od podataka iz app.js koji se menjaju, kada se podaci promene filteredBooks() update-uje vrednosti i sa {{ filteredBooks }} te vrednosti se menjaju u HTML-u
+  // ovde se u filteredBooks() filtrira niz books i uzimaju se samo book sa isFav = true.
+  // u html-u se sa v-for="book in filteredBooks" iterira kroz fitrirani niz i prikazuju se samo book koji imaju isFav = true
+  
+    // kada se hvata event on se hvata kao parametar i event objekat je uvek prvi parametar
+    // kada hocemo da prosledimo parametar iz html-a onda se on prosledjuje kao parametar funkcije ali moramo da navedemo i da zelimo da prosledimo event objekat sa $event i to kao prvi parametar - @mouseover="handleEvent($event, 5)"
+	
+	
+-----------------------------------------------------------------------------------------------------------
+------------------------------------------------ Vue CLI --------------------------------------------------
+
+
+
+
+
+-----------------------------------------------------------------------------------------------------------
+---------------------------------------- projekat - modal-project -----------------------------------------
+-----------------------------------------------------------------------------------------------------------
+
+
+---------------------------------- Template refs ----------------------------------
+-- Template refs - u DOM elemente se stavljaju reference da bi kasnije mofli d adodjemo do ovih DOM elemenata i manipulisemo njima. Za dodavanje referenci u DOM elemente s ekoriste varijable.
+U <template> se dodaje ref atribut a do njega dolazimo u <script> sa this.$refs i imenom te reference. $refs ce vratiti sve reference koje su u template i onda trebamo da uzmemo po imenu onu koja nam treba.
+<template>
+  <h1>{{ title }}</h1>
+  <input type="text" ref="refName" />
+  <button @click="handleClick">Click me</button>
+</template>
+<script>
+  methods: {
+    handleClick() {
+      console.log(this.$refs.refName.value);
+    },
+
+
+---------------------------------- Props ----------------------------------
+
+Props sluzi za prosledjivanje podataka iz parent komponente u child komponentu.
+Ako u vise komponenti trebamo da imamo iste podatke, npr. niz arr, onda taj niz moze da se definise u parent komponenti a da se prosledjuje u child komponente i da se tamo setuje u props. Ovako ce sve komponente imati isti niz i taj niz mora da se definise samo jednom.
+
+Ovo je u App.vue :header="appHeaderText" - iz App.vue se u child komponentu salje podatak header. :header - ovo znaci da se header props child komponente binduje za podatak appHeaderText iz App komponenete. appHeaderText je u App komponenti definisan u data(){} i njime moze da se manipulise u App komponenti. 
+Ovo je u Modal komponenti :class="{ sale: theme === 'sale' }". theme je props i podatak u ovaj prop dolazi iz parent komponenet. :class znaci da se css klasa binduje za prop theme i obako mozemo dinamicki da menjamo klasu.
+:class="{ sale: theme === 'sale' }" - prvo se evaluira izraz theme === 'sale' i ako je true onda se primanjuje klasa sale (ono sto je sale:).
+
+
+
+---------------------------------- Emitting Custom Events ----------------------------------
+
+Sa $emit('parametar') mozemo da emitujemo event iz child komponenet koji hvatamo u parent komponenti.
+
+U Modal komponenti setujemo da click event (@click="closeModal") poziva funkciju closeModal koja emituje event koji se hvata u parent komponenti
+
+// kada se klikne na root div ove komponente ona emituje event i u tom eventu prosledjujemo parametar 'close'. U parent komponenti je komponenta <Modal /> i unutar nje hvatamo evet sa @close='nekaFunkcija'. Unutar parent komponenet ce se pozvati funkcija nekaFunkcija kada se uhvati close event.
+
+@click="closeModal" - dodavanje event listenera
+closeModal() {this.$emit('close');}, - kada se dogodi click event emitujemo ga u parent komponentu
+@close="toggleModal" - u parent komponenti se hvata emitovani event i poziva se funkcija toggleModal
+
+
+
+---------------------------------- Click Event Modifiers ----------------------------------
+na click event moze da se doda event modifier, npr. click event se modifikuje da se event desi samo kada se desi desni klik - @click.right="toggleModal"
+ili @click.alt="toggleModal" - event ce se desiti samo na left click i to kada je ALT pritisnut
+<div class="backdrop" @click.self="closeModal"> - .self modifier znaci da ce se event desiti kada se klikne samo na ovaj div. Ako imamo div unutar ovoga event se nece desiti ako se klikne na taj unutrasnji.
+
+
+
+---------------------------------- Slots ----------------------------------
+Slots se koriste za prosledjuvanje slozenijeg sadrzaja u komponentu tj. template-a. Za prosledjuvanje podataka (string, boolean i sl.) koristimo props a za prosledjivanje template-a koristi se template.
+U modal komponenti smo imali:
+      <h1>{{ header }}</h1>
+      <p>{{ text }}</p>
+To se sada uklanja i ovi elementi se sada iz App.vue prosledjuju sa slots. Da bi se ovo uradilo komponenta modal ne moze da bude self-closing <Modal /> nego mora da ima otbarajuci i zatvarajuci tag. Menja se u <Modal></Modal>
+	- App.vue - h1 i p se prosledjuju Modal komponenti
+    <Modal theme="sale" @close="toggleModal">
+      <h1>Ninja Givaway!</h1>
+      <p>Grab your ninja swag for half price!</p>
+    </Modal>
+
+	- Modal.vue - ovde se dodaje <slot>
+    <div class="modal" :class="{ sale: theme === 'sale' }">
+      <slot></slot>
+    </div>
+	
+- slot-u moze i da se da ime da bi mogli da ga umetnemo gde zelimo. U App.vue u komponenti Modal kreiramo template i imenujemo ga 'links'. posle se taj slot injectuje u Modal komponentu tamo gde zelimo sa name="links" 
+    <Modal theme="sale" @close="toggleModal">
+      <template v-slot:links>
+        <a href="#">Sing up now!</a>
+        <a href="#">More info</a>
+      </template>
+      <h1>Ninja Givaway!</h1>
+      <p>Grab your ninja swag for half price!</p>
+    </Modal>
+
+<slot name="links"></slot> - Modal komponenta
+
+
+
+---------------------------------- Using teleport ----------------------------------
+Teleport komponenta je nesto sto se moze prikazati bilo gde u DOM-u. Ne mora d abude u okviru div-a u koji se injectuje Vue aplikacija.
+
+U HTML se dodaje div sa klasom modals a u Vue se dodaje <teleport> u koji se stavlja kod koji treba d ase injectuje. U Vue kodu div iz HTML-a se hvata sa queri selektorom po css klasi.
+
+<div class="modals"></div>
+
+  <telepor to=".modals" v-show="showModal">
+    <Modal theme="sale" @close="toggleModal">
+      <template v-slot:links>
+        <a href="#">Sing up now!</a>
+        <a href="#">More info</a>
+      </template>
+      <h1>Ninja Givaway!</h1>
+      <p>Grab your ninja swag for half price!</p>
+    </Modal>
+  </telepor>
+
+
+-----------------------------------------------------------------------------------------------------------
+------------------------------------ projekat - Ninja Reaction Timer --------------------------------------
+-----------------------------------------------------------------------------------------------------------
+Opis igre - na ekranu je dugme 'Play' na koje korisnik treba da klikne. Kada klikne posle random vremena (izmedju 2 i 7 sekundi) ispod dugmeta ce se pojaviti zeleni pravougaonik na koji korisnik treba sto brze da klikne. Meri se vreme za koliko je korisnik kliknuo - meri se vreme reakcije. Na osnovu vremena reakcije ispisuje se rezultat/ocena korisnika.
+
+
+---------------------------------- Lifecycle hooks ----------------------------------
+Svaka komponenta prolazi kroz zivotni ciklus:
+1. created
+2. mounted to DOM
+3. updated
+4. destroyed
+
+Hooks mozemo da koristimo da pozovemo metodu u nekom trenutku zivotnog ciklusa.
+Redosled hooks-a - redosled eventa koji se dogadjaju:
+1. beforeCreate - ovaj event se okida pre nego sto se komponenta kreira - ovde imamo pristup elementima iz komponente
+2. created - ovaj event se okida kada je komponenta kreirana
+3. nakon created template komponete se kompajlira 
+4. nako ovoga se okuda beforeMount - ovo je trenutak pre nego sto se komponenta mountuje u DOM. Ovde imamo pristup sbim podacima, eventima i template-ima komponente.
+5. mounted - sada se komponenta mount-uje i okida se event mounted. Ovo je dobar trenutak da se poziva fetch() metoda.
+6. beforeUpdate - sada je komponenta mount-ovana i komponenta moze da dobije nove podatke ili da dodje do promene usled nekog eventa (click i sl.). Pre nego sto se promene podaci okida se event beforeUpdate. Ovaj event se okida nakon promene podataka a pre re-renderovanja DOM-a.
+7. updated - nakon sto se re-renderuje DOM okida se updated event.
+8. beforeUnmount - kada komponenta vise nije potrebna. Moze da se koristi za clenup
+9. unmounted
+
+
+-----------------------------------------------------------------------------------------------------------
+------------------------------------------ projekat - Web Form --------------------------------------------
+-----------------------------------------------------------------------------------------------------------
+
+---------------------------------- 2-way Data Binding ----------------------------------
+Najlaksi nacin da se prati (uzme vrednost) sta korisnik kuca u input-u je v-model. Ovime moze da se prati sta je korisnik odabrao u padajucem meniju, sta je cekirao i sl.
+v-model nam omogucava da sinhronizujemo property-e iz data(){} i input.value i ovo se zove 2-way binding. Input value se veze za paroperty i cim s epromeni input.value menja se vrednost u property-u i obrnuto - cim se promeni property promeni se i value u input polju.
+
+---------------------------------- Select Boxes ----------------------------------
+Kada imamo checkbox input on moze da vraca podastak true/false ili neku vrecnost. Ako zelimo da vraca neku vrednost onda u input tagu moramo da navedemo value="nekaVrednost" i kada se cekira taj checkbox u property-u iz data() ce biti ta vrednost.
+
+  data() {
+    return {
+      email: '',
+      password: '',
+      role: 'designer',
+      terms: false,
+      names: [],
+    };
+  },
+  
+kada se cekira ovaj checkbox u data() u terms bice true.
+	<input type="checkbox" required v-model="terms" />
+	<label>Accept terms and conditions?</label>
+
+Ovde je u data() definisan niz names i kada se klikne na neki checkbox vrednost iz value="" ce biti dodana u niz zato sto je bindovana sa v-model.
+	<input type="checkbox" value="Shaun" v-model="names" />
+	<label>Shaun</label>
+
+	<input type="checkbox" value="yoshi" v-model="names" />
+	<label>yoshi</label>
+
+	<input type="checkbox" value="mario" v-model="names" />
+	<label>mario</label>
+
+
+---------------------------------- Keyboard Events ----------------------------------
+ data() - tempSkill: '', skills: [],
+ 
+<label>Skills:</label>
+<input type="text" v-model="tempSkill" @keyup="addSkill" />
+	  
+addSkill(e) {
+  // kada je pritisnut , i kada ima neku vrednost pre toga. U trenutku kada se pritisne , vrednost u this.tempSkill je ono sto je pre zareza
+  if (e.key === ',' && this.tempSkill) {
+	// proverava se da li je vestina vec dodata u niz - ne treba da bude duplikata
+	if (!this.skills.includes(this.tempSkill.replace(',', ''))) {
+	  this.skills.push(this.tempSkill.replace(',', '')); // uklanja se zarez
+	  this.tempSkill = ''; // cisti se this.tempSkill i input polje
+	}
+  }
+}, 
+
+Ovde se u input ukuca vestina koja se privremeno cuva u tempSkill a kada se pusti , (zarez) prebacuje se u niz skuls. tempSkill se cisti i unosi se nova vestina. Za prebacivanje tempSkill u skills prati se keyboard event - prati se keypress event. Prati se kada se otpusti (@keyup) zarez.
+
+Vestine se dodaju u div i prikazuju se jedna ispod druge.
+<div v-for="skill in skills" :key="skills.indexOf(skill)">{{ skill }}</div>
+	  
+	  
+---------------------------------- Submitting Forms ----------------------------------
+Na formu se dodaje submit event i na njega se dodaje event modifier .prevent da bi se sprecilo default ponasanje forme da brise podtake iz input polja nakon submita.
+@submit.prevent - @submit je event a .prevent je event modifier. .prevent je umesto event.preventDefault().
+<form @submit.prevent="submitForm">
+
+U funkciju submitForm() koja hendluje submit ne mora da se prosledi podatak. Podacima iz forme se pristupa preko this. U this ce biti svi podaci iz input polja iz forme po imenima property-a iz data().
+
+
+
+-----------------------------------------------------------------------------------------------------------
+------------------------------------------ projekat - Ninja Jobs --------------------------------------------
+-----------------------------------------------------------------------------------------------------------
+
+
+---------------------------------- Vue Router ----------------------------------
+
+Klijent posalje request serveru a ovaj mu posalje response i tada se pokrene aplikacija (web stranica). U html-u je injectovan App.vue i on na dalje preuzima kontrolu nad prikazivanjem sadrzaja. Klijent na dalje ne salje request serveru i server mu vise ne vraca sadrzaj, od sada sav sadrzaj kontrolise Vue. 
+Ruter gleda na kom url-u je korisnik i na osnovu toga prikazuje komponente u root komponenti tj. u App.vue. Npr ako je samo / onda se prikazuje komponenta App a ako je /contacts onda se u root komponentu injectuje Contacts komponenta. Ako korisnik klikne na link sa /about vue presrece taj request i ne salje ga na server nego korisniku servira About komponentu.
+
+-- Vue Router setup - prilikom kreiranja aplikacije selektuje se router i bice dodat ili moze i naknadno da se doda.
+1. prilikom kreiranja aplikacije selektuje se 'router'
+2. Za: 'Use history mode for router?' se bira Yes
+
+Sada u projektu imamo folder router i u njemu fajl index.js.
+
+/src/router/index.js - pocetak
+import { createRouter, createWebHistory } from 'vue-router';
+import HomeView from '../views/HomeView.vue';
+import AboutView from '../views/AboutView.vue';
+
+// U ovom fajlu je varijabla routes u kojoj je niz objekata u kojima je definisan url i koja komponenta/view treba da se prikaze za taj url. Komponente koje se serviraju korisniku su u folderu views.
+// Kada se kreira nova ruta/url moramo da dodjemo ovde i da dodamo objekat s atom rutom i komponentom koja treba da se prikaze na toj ruti
+const routes = [
+  {
+    path: '/',
+    name: 'HomeView',
+    component: HomeView,
+  },
+  {
+    path: '/about',
+    name: 'AboutView',
+    component: AboutView,
+  },
+];
+
+// Ovde se instancira Router objekat.
+// sa createWebHistory se kreira web history koji sluzi da klik na forward i back tj. da se korisnik krece napred/nazad po stranicama na kojima je bio
+// process.env.BASE_URL je bazni url projekta - to je ono sto dolazi ispred path: '/'
+const router = createRouter({
+  history: createWebHistory(process.env.BASE_URL),
+  routes,
+});
+
+export default router;
+/src/router/index.js - kraj
+
+U main.js mora da se doda import rutera i da se kaze aplikaciji da ga koristi tj. treba da se registruje.
+
+main.js
+import router from './router'
+createApp(App).use(router).mount('#app') 
+-------------------------------------------------------
+
+App.vue
+<template>
+  <nav>
+    <router-link to="/">Home</router-link> |
+    <router-link to="/about">About</router-link>
+  </nav>
+  <!-- u <router-view/> ce biti injectovane komponente koje korisnik zahteva odlaskom na neki url -->
+  <!-- da bi komonenta bila injectovana mora da se pozove sa linkom to="" - <router-link to="/">Home</router-link>. Ako je komponenta registrovana u ruteru (u routes nizu) pojavice se ovde -->
+  <router-view />
+</template>
+
+Linkovi gde korisnik zeli da ide su u tagovima router-link. Kada korisnik klikne na link vue presrece taj klik zati sti je u router-link tagu. Kada se klikne na tag router-link ne salje se http request ka serveru. Kada se klikne na router-link tag vue presrece to i injectuje odgovarajucu komponentu.
+
+U router-link u to="" moze da se prosledi objekat i da se to="" binduje za vrednost objekta. Ovo je bolje resenje jer kada se klikne na link vue gleda u property objekta i vidi koji je name view-a i njega injectuje. Ovako moze da se promeni i url ali ce vue i dalje injectovati odgovarajucu komponentu.
+
+<router-link :to="{ name: 'AboutView' }">About</router-link>
+Url moze da se promeni na /about-us ali ce se komponenta i dalje injectovati.
+
+  {
+    path: '/about', <=== ovo moze da se promeni na /about-us 
+    name: 'AboutView',
+    component: AboutView,
+  },
+
+
+---------------------------------- Route parameters ----------------------------------
+
+U ruteru se ovako definise url u kojem ce biti id parametar. Do parametra iz url-a se dolazi sa {{ $route.params.jobId }} a 'jobId' je naziv parametra koji smo definisali u path: '/job/:id'.
+Kada korisnik klikne na jedan job u Jobs komponenti onda treba da mu se prikaze JobDetails komponenta sa podacima o job-u za taj id
+{
+	path: '/job/:jobId',
+	name: 'JobDetails',
+	component: JobDetails,
+},
+
+U komponenti do parametra iz url-a se doalzi sa:
+  data() {
+    return {
+      jobId: this.$route.params.jobId
+    }
+  }
+
+U Jobs komponenti se prikazuje lista komponenti Job-ova koji trebaju da budu linkovi. Kada se klikne na neki od njih treba da se prikaze komponenta Job sa detaljima a ta komponenta se bira po id-u.
+U jobs komponenti se na sledeci nacin kreira lista Job komponenti i od njih se kreiraju router-link. name: 'JobDetails' - je komponenta koja treba da se prikaze kada se klikne na link a u params se setuje parametar u url-u. Za parametar se setuje iema parametra (jobId) i koji podatak ce to biti (job.id).
+    <router-link :to="{ name: 'JobDetails', params: { jobId: job.id } }">
+      <h2 class="job-item">{{ job.title }}</h2>
+    </router-link>
+
+U params u key:value parovima dodaju imena parametara i njihove vrednosti. Ovde moze da bude i vise parametara a moraju da se dodaju i u /router/insex.js u path: '/job/:jobId'.
+
+U JobDetails.vue parametar moze d ase prihvati u props po imenu sa props: ['jobId'] i u komponenti je dostupan kao jobId. Da bi ovo radilo u /router/index.js, za ovaj url, treba da se doda props: true.
+  {
+    path: '/job/:jobId',
+    name: 'JobDetails',
+    component: JobDetails,
+    props: true,
+  },
+
+
+---------------------------------- Redirect ----------------------------------
+Primer - sada se svi jobovi prikazuju na url-u /jobs a nekada je url bio /all-jobs. Sada treba uraditi sledece: kada neko ide na stari url (/all-jobs) trebamo da ga redirektujemo na novi url, ne /jobs. Treba dodati i 404 Page da kada neko ide na url koji ne postoji, da ga redirektujemo na 404 stranu.
+  // redirect - kada korisnik ukuca /all-jobs redirektujemo ga na /jobs
+  {
+    path: '/all-jobs', // ovde se definise url sa koga redirektujemo korisnika. Korisnik je dosao na ovaj url a mi ga redirektujemo na /jobs
+    redirect: '/jobs', // redirektujemo ga na ovaj
+  },
+  
+   // ako korisnik ukuca neki url koji nismo definisali onda ga redirektujemo na 404
+  // '/:catchAll(.*)' je regex koji hvata sve rute koje nisu neke od ovih koje su definisane gore
+  {
+    path: '/:catchAll(.*)',
+    name: 'NotFound',
+    component: NotFound,
+  },
+
+---------------------------------- Programmatic Navigation ----------------------------------
+Posto smo dodali web history prilokom pokretanja aplikacije mozemo da koristimo forward i backward dugmad u browseru. 
+Istu funkcionalnost mozemo da dodamo u aplikaciju i napravimo dugmad koja ce koristiti web history.
+
+App.vue
+<template>
+  <nav>
+    <router-link to="/">Home</router-link> | <router-link :to="{ name: 'AboutView' }">About</router-link> |
+    <router-link :to="{ name: 'Jobs' }">Jobs</router-link>
+  </nav>
+  <!-- u <router-view/> ce biti injectovane komponente koje korisnik zahteva odlaskom na neki url -->
+  <!-- da bi komonenta bila injectovana mora da se pozove sa linkom to="" - <router-link to="/">Home</router-link>. Ako je komponenta registrovana u ruteru (u routes nizu) pojavice se ovde -->
+
+  <button @click="redirect">Redirect</button>
+  <button @click="back">Go back</button>
+  <button @click="forward">Go forward</button>
+
+  <router-view />
+</template>
+<script>
+export default {
+  methods: {
+    redirect() {
+      // sa ovime redirektujemo korisnika na home view - { name: 'HomeView' } je podatak iz /router/index.js i ovo je komponenta koju zelimo da prikazemo korisniku kada klikne na ovo dugme
+      this.$router.push({ name: 'HomeView' });
+    },
+    back() {
+      // this je referenca ka komponenti. Sa $router uzimamo ruter u kome je istorija kretanja po url-ovima. Sa go(-1) idemo jedan korak unazad u istoriji.
+      this.$router.go(-1);
+    },
+    forward() {
+      this.$router.go(1);
+    },
+  },
+};
+</script>
+
+
+---------------------------------- Fetch podataka ----------------------------------
+Za mock servera koji nam vraca podatke za vue aplikaciju koristicemo JSON server.
+U root-u projekta kreira se folder data i u njemu fajl db.json u kojem je niz jobs. Niz jobs ima JS objekte kao elemente niza i oni su isti kao u niz jobs u Jobs.vue. Niz iz Jobs.vue ce biti zamenjen sa nizom iz db.json. 
+
+Potrebno je da se instalira json server package u porojekat i da se pokrene json server koji ce servirati podatake vue aplikaciji.
+1. npm install json-server		- posto je kod mene vec instaliran globalno ovo ne mora da se radi
+2. pokretanje servera: json-server --watch data/db.json		- pokrecemo se json server i kazemo mu d agleda db.json fajl u kojem su podaci
+3. json server ce se pokrenuti i radice na portu 3000. request na localhost:3000/jobs vraca niz objekata iz db,json fajla.
+
+
+-----------------------------------------------------------------------------------------------------------
+------------------------------------------ projekat - Dojo Blog -------------------------------------------
+-----------------------------------------------------------------------------------------------------------
+
+---------------------------------- Options API ----------------------------------
+Options API je nacin kreiranja aplikacije koji je koriscen do sada - koristi se data(){}, methods: {}, computed: {}, mounted(){} ...
+Sve ove metode i property-i su kreirane unutar objekta komponente koji se eksportuje se export default{}.
+
+Drugi nacin rada je Composition API.
+---------------------------------- Composition API ----------------------------------
+Composition API je:
+export default {
+	setup() {
+		// data
+		
+		// methods
+
+		// computed
+		
+		// lifcycle hooks
+	}
+}
+
+Prednosti composition API-a je:
+- logika se grupise unutar setup() funkcije
+- lako se kreira reusable logika - logika moze da se eksportuje u funkciji i da se koristi na drugom mestu
+
+Unutar setup(){} nije nam dostupan this koji je referenca ka komponenti.
+Kada se koristi composition API u komponenti se kreira funkcija setup(){} i ona se pokrece pre svih lifecycle hook-ova.
+
+Kako se koristi composition API:
+1. kreira se setup() metoda koja se uvek prva pokrece
+2. unutar setup() se kreiraju varijable i funkcije
+3. na kraju setup() sa return{} se vracaju sve varijable i funkcije iz setup() inace nece biti dostupne u <template> 
+
+---------------------------------- Composition API - template refs ----------------------------------
+Template refs se koriste da se kreiraju reference ka dom elementima u <template>.
+Rad sa template refs u composition api.
+
+U template u <p> tagu se dodaje ref="p" a u setup() se koristi ref iz vue-a i sa return se vraca iz setup()
+<template>
+    <p ref="p">Paragraf</p>
+</template>
+  setup() {
+    const p = ref(null); 
+    return { p };
+  },
+
+
+---------------------------------- Using Refs for Reactivity ----------------------------------
+let name = 'mario'; - kada se u setup() variabla kreira ovako onda ona nije reaktivna tj. ako joj promenimo vrednost u <script< tagu nece se promeniti njena vrednost u <template>. Da bi se menjala vrednost u template varijabla kreira na sledeci nacin: let name = ref('mario');. Ovakva variabla je reaktivna i kada se promeni vrednosti u script-u renderovace se i druga vrednost u template.
+Ovakva variabla je reaktivna pa je vue prati i kada joj se promeni vrednost vue update-uje template.
+
+---------------------------------- Refs vs Reactive ----------------------------------
+Reaktivne variablije mogu da se kreiraju i koriscenjenjem reactive iz vue biblioteke
+import { ref, reactive } from 'vue';
+
+Kada koristimo reactive do vrednosti varijable ne dolazimo sa value.
+refs: ninjaOne.value.age - sa refs se koristi value
+reactive: nonjaTwp.age - sa reactive se ne koristi value
+
+---------------------------------- Using Computed Values ----------------------------------
+uvozi se iz vue biblioteke import { ref, reactive, computed } from 'vue';
+U computed() se prosledjuje funkcija koja se poziva i koja vraca vrednost.
+
+---------------------------------- watch and watchEffect ----------------------------------
+Iz vue biblioteke se uvozi watch. import { ref, reactive, computed, watch, watchEffect } from 'vue';
+Watch moze da se podesi da gleda/prati ref variablu i svaki put kada se ona promeni da se poziva funkcija koju smo definisali.
+
+    // setuje se da watch prati nameSearch ref variablu i svaki put kada se ona promeni poziva se definisana funkcija
+    watch(nameSearch, () => {
+      console.log('watch() function ran');
+    });
+
+U watchEffect se definise funkcija koja se poziva kada se komponenta ucita tj. kada se pozove setup().
+    // watchEffect se poziva kada se kreira komponenta (pokrene setup()) i nakon toga s epoziva svaki put kada se promeni vrednost nameSearch
+    watchEffect(() => {
+      console.log('watchEffect function run'), nameSearch.value;
+    });
+
+------------------------------------- Composite API i props ----------------------------------------
+Kada se koristi kompozitni API props se u setup() funkciju prosledjuje kao prvi parametar i tako je dostupan unutar setup().
+Prosledjeni props ce unutar setup() biti dostupan kao proxy objekat. Proxy je wraper oko props objekta. Podacima iz props se moze pristupati kao i obicno. 
+
+------------------------------------- Lifecycle Hooks ----------------------------------------
+Unutar setup() mogu da se koriste lifecycle hooks tako sto se ispred lifecycle metoda doda 'on' - onMounted(), onUpdated(), onCreated(). Ove metode trebaju da se importuju iz vue-a.
+
+import { computed, onMounted, onUnmounted, onUpdated } from 'vue';
+export default {
+  props: ['post'],
+  setup(props) {
+    const snippet = computed(() => {
+      return props.post.body.substring(0, 100) + '...';
+    });
+    // i onMounted se prosledi funkcija i ta funkcija se poziva kada se komponenta mounuje
+    onMounted(() => console.log('component - onMounted()')); // poziva se kada se komponenta prvi put renderuje - mountuje
+    onUnmounted(() => console.log('component - onUnmounted()'));
+    onUpdated(() => console.log('component - onUpdated()')); // poziva se kada se promene podaci u props pa se komponenta re-renderuje
+
+    return { snippet };
+  },
+};
+
+
+------------------------------------- Fetching data in setup() ----------------------------------------
+
+    // podaci za posts se uzimaju od json servera- ovde se niz inicijalizuje a podaci se dovlace sa fetch()
+    const posts = ref([]);
+    // kreira se error varijabla za slucaj da podaci ne mogu da se dobiju od jeson servera
+    const error = ref(null);
+
+    const load = async () => {
+      try {
+        // radi se fetch podataka sa json servera
+        let data = await fetch('http://localhost:3000/posts');
+        // proverava se da li ke response.ok = true (ili response.status = 200)
+        console.log(data);
+        if (!data.ok) {
+          throw Error('no data available');
+        }
+        // uzima se podatak iz response-a, parsira se u json i setuje se u posts.value
+        posts.value = await data.json();
+      } catch (err) {
+        error.value = err.message;
+        console.log(error.value);
+      }
+    };
+
+    load();
+
+
+------------------------------------- Reusable Composables ----------------------------------------
+Conposition API nam omogucava da deo koda izmestimo u odvojeni fajl i da ga importujemo. Funkcionalnost koja je importovana moze da se koristi u setup() metodi. Npr. fetch podataka izmestimo u servis, taj servis importujemo i pozivamo ga u setup() metodi. Taj servis mozemo da pozivamo u setup() u raznim komponentama i ne moramo da ponavljamo isti kod u tim komponentama.
+Ove funkcije koje koje smo izmestili i pozivamo ih u setup()-u komponente zovu se 'Reusable Composables' - composition functions. Definisu se samo jednom a koriste se vise puta gde je potrebno.
+Za ove funkcije kreiramo folder /src/composables. 
+Za fetch funkciju za postove kreiramo fajl getPosts.js. Logika za fetch post podataka je premestena u /src/composables/getPosts.js. Jedina promena je sto se funkcija ne poziva u fajlu getPosts.js nego u HomeView.js.
+
+-- getPosts.js - POCATEAK
+import { ref } from 'vue';
+const getPosts = () => {
+  // podaci za posts se uzimaju od json servera- ovde se niz inicijalizuje a podaci se dovlace sa fetch()
+  const posts = ref([]);
+  // kreira se error varijabla za slucaj da podaci ne mogu da se dobiju od json servera
+  const error = ref(null);
+
+  const load = async () => {
+    try {
+      // radi se fetch podataka sa json servera
+      let data = await fetch('http://localhost:3000/posts');
+      // proverava se da li ke response.ok = true (ili response.status = 200)
+      console.log(data);
+      if (!data.ok) {
+        throw Error('no data available');
+      }
+      // uzima se podatak iz response-a, parsira se u json i setuje se u posts.value
+      posts.value = await data.json();
+    } catch (err) {
+      error.value = err.message;
+      console.log(error.value);
+    }
+  };
+
+  // iz ovog fajla vracamo posts niz, error i load funkciju
+  return { posts, error, load };
+};
+
+export default getPosts;
+-- getPosts.js - KRAJ
+
+-- kod u HomeView.vue
+    // logika za fetch post podataka je premestena u /src/composables/getPosts.js
+    // jedina promena je sto se funkcija ne poziva u fajlu getPosts.js nego ovde
+    // iz getPosts.js se vraca posts, error, load - return { posts, error, load }. Zato se ovde radi destruktuiranje i kreiramo varijable koje se vracaju iz getPosts.js
+    const { posts, error, load } = getPosts();
+
+    // poziva se load() funkcija koja je uzeta iz getPosts.js
+    // nakon poziva funkcije load() imacemo podatke u posts. Ako bude greske prilikom fetch-a imacemo podatke u error
+    load();
+
+
+
+
+
+
+
+
+
+
+
+
+
+

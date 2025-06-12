@@ -13,17 +13,20 @@ import "@mdi/font/css/materialdesignicons.css";
 
 const taxAppTheme = {
   colors: {
-    primary: "#3A4257", //"002939", //"#3A4257",
-    secondary: "#F0DDBC", //"#E4CFA9", //"#F0DDBC"
-    navbar: "#556180",
+    background: "#212121", // ono sto se setuje u background to ce bito background-color za App
+    primary: "#424242", // tamno siva
+    secondary: "#616161", // svetlija siva
+    accent: "#c4c2c2", // svetlo siva
+    success: "#00C853", // zelena
+    error: "#d32f2f", // crvena
+    info: "#f5f5f5", // prljavo bela
+    warning: "#FFC107", // zuta
   },
 };
 
 const vuetify = createVuetify({
   components: {
     ...components,
-    // VDataTable,
-    // VDataTableServer,
   },
   directives,
   theme: {
@@ -32,32 +35,6 @@ const vuetify = createVuetify({
       taxAppTheme,
     },
   },
-  defaults: {
-    // VDataTable: {
-    //   fixedHeader: true,
-    //   noDataText: "Result not found",
-    // },
-    // VTextField: {
-    //   hideDetails: true,
-    //   density: "compact",
-    // },
-    // VCombobox: {
-    //   hideDetails: true,
-    //   density: "compact",
-    // },
-    // VCheckbox: {
-    //   hideDetails: true,
-    //   density: "compact",
-    // },
-    // VSelect: {
-    //   hideDetails: true,
-    //   density: "compact",
-    // },
-  },
 });
 
-createApp(App)
-    .use(store)
-    .use(vuetify)
-    .use(router)
-    .mount("#app");
+createApp(App).use(store).use(vuetify).use(router).mount("#app");

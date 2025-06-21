@@ -24,7 +24,7 @@ public class TodoServiceImpl implements TodoService {
     @Override
     public Todo saveTodo(Todo todo) {
         todo.setCreatedAt(LocalDateTime.now());
-        todo.setCompleted(false);
+        //todo.setCompleted(false);
         return repository.save(todo);
     }
 
@@ -33,7 +33,7 @@ public class TodoServiceImpl implements TodoService {
         Todo todo = getTodo(todoId);
         //todo.setTitle(newTodo.getTitle());
         todo.setDescription(newTodo.getDescription());
-        todo.setCompleted(newTodo.isCompleted());
+        //todo.setCompleted(newTodo.isCompleted());
         todo.setCompletedAt(newTodo.getCompletedAt());
         todo.setDeletedAt(newTodo.getDeletedAt());
         todo.setModifiedAt(LocalDateTime.now());
@@ -48,6 +48,11 @@ public class TodoServiceImpl implements TodoService {
     @Override
     public List<Todo> getAllTodo() {
         return (List<Todo>) repository.findAll();
+    }
+
+    @Override
+    public List<Todo> getAllByDeletedAtIsNull() {
+        return repository.findAllByDeletedAtIsNull().orElseThrow(() -> new RuntimeException());
     }
 
     static Todo unwrapTodo(Optional<Todo> entity) {

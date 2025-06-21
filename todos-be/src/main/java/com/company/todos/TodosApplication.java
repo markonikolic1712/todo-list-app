@@ -63,14 +63,19 @@ public class TodosApplication implements CommandLineRunner {
 		Todo todo4 = new Todo();
 		todo4.setTitle("mika title 2");
 		todo4.setDescription("mika description 2");
+		Todo todo5 = new Todo();
+		todo5.setTitle("mika title 3");
+		todo5.setDescription("mika description 3");
+		todo5.setCompletedAt(LocalDateTime.now());
+
 		todos.add(todo1);
 		todos.add(todo2);
 		todos.add(todo3);
 		todos.add(todo4);
+		todos.add(todo5);
 
 		for(Todo todo : todos) {
 			todo.setCreatedAt(LocalDateTime.now());
-			todo.setCompleted(false);
 
 			Long id = todos.indexOf(todo) < 2 ? 1L : 2L;
 

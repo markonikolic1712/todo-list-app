@@ -1,38 +1,16 @@
 <template>
   <!-- <v-container class="bg-grey-darken-4 text-white" fluid> -->
-  <v-container fluid>
+  <v-container>
     <v-row justify="center" class="mt-10">
       <v-col cols="12" xl="6" lg="6" md="8" sm="10">
         <h1 class="text-center mb-6 text-h4 font-weight-bold">My Todos</h1>
-        <v-card color="secondary" class="pa-3">
-          <!-- <v-form> -->
-            <v-row align-content="space-around" class="pt-2 px-1">
-              <v-col cols="5">
-                <label class="font-weight-bold">Title:</label>
-                <v-text-field
-                  bg-color="info"
-                  v-model="title"
-                  placeholder="What's the title of your To Do?"
-                ></v-text-field>
-              </v-col>
-              <v-col cols="5">
-                <label class="font-weight-bold">Description:</label>
-                <v-text-field
-                  bg-color="info"
-                  v-model="description"
-                  placeholder="What's the description of your To Do?"
-                ></v-text-field>
-              </v-col>
-              <v-col cols="2" align-self="center">
-                <v-btn value="add" color="success" class="btn-add" @click="add">Add</v-btn>
-              </v-col>
-            </v-row>
-          <!-- </v-form> -->
+        <v-card color="primary" class="pa-3">
+          <TodoForm @addTodoItem="createTodoItem" />
           <v-divider></v-divider>
-          <v-row class="mt-4 mb-1 pl-4">
-            <v-btn color="success">To Do</v-btn>
-            <v-btn>Completed</v-btn>
-          </v-row>
+          <TodoList
+            @deleteTodoItem="deleteTodo"
+            @completeTodoItem="completeTodo"
+          />
         </v-card>
       </v-col>
     </v-row>
@@ -40,20 +18,35 @@
 </template>
 
 <script setup>
-import { onMounted, ref, computed } from "vue";
+import TodoForm from "./TodoForm.vue";
+import TodoList from "./TodoList.vue";
+import { onMounted, ref } from "vue";
+import { useStore } from "vuex";
 
+const store = useStore();
 const title = ref("");
 const description = ref("");
+const createTodoItem = (todo) => {
+  store.dispatch("addTodoItem", todo);
+};
 
-const add = () => {
-  console.log('title.value: ', title.value);
-  console.log('description.value: ', description.value);
-}
+const deleteTodo = (todo) => {
+  // const index = todoListAll.value.findIndex((i) => i.id === todo.id);
+  // if (index >= 0) todoListAll.value.splice(index, 1);
+  console.log("TodoView - deleteTodo: ", todo);
+  store.dispatch("deleteTodoItem", todo);
+};
+
+const completeTodo = (todo) => {
+  // const index = todoListAll.value.findIndex((i) => i.id === todo.id);
+  // if (index >= 0) todoListAll.value.splice(index, 1);
+  console.log("TodoView - completeTodo: ", todo);
+  store.dispatch("completeTodoItem", todo);
+};
 
 onMounted(() => {
-  title.value = 'Title - start';
-  description.value = 'Description - start';
-  cl
+  title.value = "Title - start";
+  description.value = "Description - start";
 });
 </script>
 

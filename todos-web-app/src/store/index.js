@@ -23,21 +23,19 @@ export default createStore({
       state.todoList.push(payload);
     },
     deleteTodoItem(state, payload) {
-      const index = state.todoList.findIndex((i) => i.id === payload.id);
-      if (index >= 0) state.todoList.splice(index, 1);
-      //setTodoList(state, list);
+      // const index = state.todoList.findIndex((i) => i.id === payload.id);
+      // if (index >= 0) state.todoList.splice(index, 1);
+      state.todoList = state.todoList.filter(item => item.id != payload.id);
     },
     completeTodoItem(state, payload) {
       const index = state.todoList.findIndex((i) => i.id === payload.id);
       if (index >= 0) {
         state.todoList[index].completedAt = payload.completedAt;
       }
-      // const newTodoList = state.todoList;
-      // state.todoList = newTodoList;
     },
     changeAddBtnState(state, payload) {
       state.addBtnState = payload;
-      console.log('state.addBtnState: ', state.addBtnState);
+      console.log("state.addBtnState: ", state.addBtnState);
     },
   },
   actions: {
@@ -80,7 +78,7 @@ export default createStore({
       ctx.commit("completeTodoItem", data);
     },
     changeAddBtnState(ctx, payload) {
-      console.log('changeAddBtnState - payload: ', payload);
+      console.log("changeAddBtnState - payload: ", payload);
       ctx.commit("changeAddBtnState", payload);
     },
   },

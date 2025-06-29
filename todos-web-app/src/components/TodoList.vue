@@ -48,8 +48,8 @@ const todoListAll = computed(() => {
 });
 
 const todoList = computed(() => {
-  console.log("TodoList - todoList.computed()");
-
+  // ovde se filtriraju elementi cele liste
+  // ako trebaju da se prikazu itemi koji su completed onda se uzimaju oni itemi koji imaju podatak u completedAt
   if (getCompletedItems.value) {
     return todoListAll.value.filter((item) => item.completedAt != null);
   } else {
@@ -60,11 +60,13 @@ const todoList = computed(() => {
 const showTodoList = () => {
   getCompletedItems.value = false;
   store.dispatch("changeAddBtnState", false);
+  store.dispatch("setTodoList");
 };
 
 const showCompletedList = () => {
   getCompletedItems.value = true;
   store.dispatch("changeAddBtnState", true);
+  store.dispatch("setTodoList");
 };
 
 const deleteTodo = (todo) => {

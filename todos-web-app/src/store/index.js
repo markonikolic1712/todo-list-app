@@ -78,7 +78,6 @@ export default createStore({
       ctx.commit("completeTodoItem", data);
     },
     changeAddBtnState(ctx, payload) {
-      console.log("changeAddBtnState - payload: ", payload);
       ctx.commit("changeAddBtnState", payload);
     },
   },

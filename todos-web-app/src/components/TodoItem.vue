@@ -50,7 +50,6 @@ const props = defineProps({
 });
 
 const emit = defineEmits(["deleteTodoItem", "completeTodoItem"]);
-
 const todo = computed(() => props.todoItem);
 
 const deleteTodo = () => {

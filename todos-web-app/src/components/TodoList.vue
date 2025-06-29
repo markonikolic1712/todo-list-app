@@ -43,7 +43,7 @@ const emit = defineEmits(["deleteTodoItem", "completeTodoItem"]);
 const store = useStore();
 const getCompletedItems = ref(false);
 const todoListAll = computed(() => {
-  console.log("todoListAll - todoList.computed()");
+  console.log("TodoList.vue =>  todoListAll.computed()");
   return store.getters.todoList;
 });
 

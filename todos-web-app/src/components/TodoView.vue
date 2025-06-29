@@ -33,14 +33,14 @@ const createTodoItem = (todo) => {
 const deleteTodo = (todo) => {
   // const index = todoListAll.value.findIndex((i) => i.id === todo.id);
   // if (index >= 0) todoListAll.value.splice(index, 1);
-  console.log("TodoView - deleteTodo: ", todo);
+  console.log("TodoView.vue => deleteTodo(): ", todo);
   store.dispatch("deleteTodoItem", todo);
 };
 
 const completeTodo = (todo) => {
   // const index = todoListAll.value.findIndex((i) => i.id === todo.id);
   // if (index >= 0) todoListAll.value.splice(index, 1);
-  console.log("TodoView - completeTodo: ", todo);
+  console.log("TodoView.vue => completeTodo(): ", todo);
   store.dispatch("completeTodoItem", todo);
 };
 

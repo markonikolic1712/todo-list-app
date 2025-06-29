@@ -4,6 +4,7 @@ const BASE_URL = "http://localhost:8080/api/todo";
 
 async function GET(path) {
   try {
+    console.log("axiosconfig.js => Salje se GET request za celu listu");
     const response = await axios.get(BASE_URL + path);
     if (response.data) return response.data;
   } catch (error) {

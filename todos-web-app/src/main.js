@@ -14,10 +14,10 @@ import "@mdi/font/css/materialdesignicons.css";
 const taxAppTheme = {
   colors: {
     background: "#212121", // ono sto se setuje u background to ce bito background-color za App
-    primary: "#424242", // tamno siva
-    secondary: "#616161", // svetlija siva
-    accent: "#c4c2c2", // svetlo siva
-    success: "#00C853", // zelena
+    primary: "#323332", // tamno siva
+    secondary: "#383838", // svetlija siva
+    todoItem: "#525252", // svetlo siva
+    success: "#23a669", // zelena
     error: "#d32f2f", // crvena
     info: "#f5f5f5", // prljavo bela
     warning: "#FFC107", // zuta

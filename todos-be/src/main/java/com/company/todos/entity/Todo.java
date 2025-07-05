@@ -26,8 +26,8 @@ public class Todo {
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime createdAt;
 
-    @Column(name = "completed")
-    private boolean completed;
+//    @Column(name = "completed")
+//    private boolean completed;
 
     @Column(name = "completed_at")
     private LocalDateTime completedAt;

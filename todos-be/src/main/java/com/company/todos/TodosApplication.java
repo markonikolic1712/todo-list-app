@@ -58,24 +58,45 @@ public class TodosApplication implements CommandLineRunner {
 		todo2.setTitle("pera title 2");
 		todo2.setDescription("pera description 2");
 		Todo todo3 = new Todo();
-		todo3.setTitle("mika title 1");
-		todo3.setDescription("mika description 1");
+		todo3.setTitle("mika title 3");
+		todo3.setDescription("mika description 3");
 		Todo todo4 = new Todo();
-		todo4.setTitle("mika title 2");
-		todo4.setDescription("mika description 2");
+		todo4.setTitle("mika title 4");
+		todo4.setDescription("mika description 4");
+		Todo todo5 = new Todo();
+		todo5.setTitle("mika title 5");
+		todo5.setDescription("mika description 5");
+		todo5.setCompletedAt(LocalDateTime.now());
+
+		Todo todo6 = new Todo();
+		todo6.setTitle("mika title 6");
+		todo6.setDescription("mika description 6");
+		todo6.setDeletedAt(LocalDateTime.now());
+
+		Todo todo7 = new Todo();
+		todo7.setTitle("mika title 7");
+		todo7.setDescription("mika description 7");
+		todo7.setCompletedAt(LocalDateTime.now());
+		todo7.setDeletedAt(LocalDateTime.now());
+
+		Todo todo8 = new Todo();
+		todo8.setTitle("mika title 8");
+		todo8.setDescription("mika description 8");
+		todo8.setCompletedAt(LocalDateTime.now());
+
 		todos.add(todo1);
 		todos.add(todo2);
 		todos.add(todo3);
 		todos.add(todo4);
+		todos.add(todo5);
+		todos.add(todo6);
+		todos.add(todo7);
+		todos.add(todo8);
 
 		for(Todo todo : todos) {
 			todo.setCreatedAt(LocalDateTime.now());
-			todo.setCompleted(false);
-
 			Long id = todos.indexOf(todo) < 2 ? 1L : 2L;
-
 			System.out.println(todoUserService.getUser(id));
-
 			todo.setTodoUser(todoUserService.getUser(id));
 			todoRepository.save(todo);
 		}

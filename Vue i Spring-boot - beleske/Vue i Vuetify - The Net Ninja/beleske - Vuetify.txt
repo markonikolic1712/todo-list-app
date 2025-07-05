@@ -1,0 +1,423 @@
+https://www.youtube.com/watch?v=2uZYKcKHgU0&list=PL4cUxeGkcC9g0MQZfHwKcuB0Yswgb3gA5
+
+Kreira se projekat todo-ninja i u njega se dodaje vuetify.
+Kada se instalira vuetify bira se opcija 'Vuetify 3 - Vue CLI (preview)'.
+Kada se instalira vuetify u folderu src ce se pojaviti folder plugins a u main.js na createApp() ce se dodati komanda da se koristi vuefify.
+
+instalacija: npm add vuetify
+
+U main.js se dodaje:
+import "vuetify/styles";
+import { createVuetify } from "vuetify";
+import * as components from "vuetify/components";
+import * as directives from "vuetify/directives";
+
+const vuetify = createVuetify({
+  components,
+  directives,
+});
+
+createApp(App)
+  .use(router)
+  .use(vuetify)
+  .mount('#app')
+  
+
+Ovo dole je template iz App.vue. U template tagu je <v-app> i u ovo je wraper za celu aplikaciju. U v-app se stavlja v-content u kome je router-view u kome ce se prikazivati komponente.
+<template>
+  <v-app>
+    <v-content>
+      <router-view></router-view>
+    </v-content>
+  </v-app>
+</template>
+
+Tag v-app treba da bude samo u root (App.vue) komonenti i ne treba da ga bude u drugim komponentama.
+
+--------------------------------------- Utility classes ---------------------------------------
+
+<v-app class="bg-grey-lighten-4"> - ovo pozadinu cele aplikacije boji u svetlo sivo
+
+class="bg-red" - pozadina taga se boji u crveno a tekst se automatski menja u belo
+class="text-red" - text se boji u crveno
+<p class="bg-red text-indigo-lighten-4 mt-2"> - u paragrafu ce pozadina biti crvena a tekst ce biti indigo boje i to maksimalni posvetljen sa lighten-4. 
+lighten ide od 1 do 4. 1 je minimum 
+Velicina teksta moze da se setuje sa class="text-h1" - od h1 do h6
+    <p class="text-uppercase">aabbcc AABBCC</p>		- AABBCC AABBCC
+    <p class="text-lowercase">aabbcc AABBCC</p>		- aabbcc aabbcc
+    <p class="text-capitalize">aabbcc AABBCC</p>	- Aabbcc AABBCC
+    <h1 class="text-h1">Massive display</h1>
+
+--------------------------------------- Buttons and Icons ---------------------------------------
+
+Mogu da se prikazu ikone iz Google Material Design-a. Skracenica za Google Material Design je mdi.
+<v-icon>mdi-view-dashboard</v-icon> 	- mdi je Google Material Design. Ova se u mdi zove dashboard a ovde je dodato view-. Imena nekih ikona su promenjena u odnosu na mdi. 
+Neke ikone se drugacije zovu nego u mdi a mogu se naci na https://pictogrammers.com/library/mdi/
+
+<template>
+  <div class="home">
+    <div>
+      <h1>HomeView</h1>
+      <p class="bg-red">
+        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Numquam omnis nulla reiciendis et atque delectus quos inventore fugit. Nemo, culpa assumenda. Earum numquam nobis architecto quod
+        maiores, expedita labore eligendi.
+      </p>
+      <p class="bg-red text-indigo-lighten-4 mt-2">
+        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Numquam omnis nulla reiciendis et atque delectus quos inventore fugit. Nemo, culpa assumenda. Earum numquam nobis architecto quod
+        maiores, expedita labore eligendi.
+      </p>
+      <p class="text-uppercase">aabbcc AABBCC</p>
+      <p class="text-lowercase">aabbcc AABBCC</p>
+      <p class="text-capitalize">aabbcc AABBCC</p>
+      <h1 class="text-h1">Massive display</h1>
+    </div>
+    <hr />
+    <div>
+      <h2>Buttons and Icons</h2>
+      <v-row class="mt-3" justify="space-evenly">
+        <v-btn class="bg-indigo text-yellow mr-1">Click me</v-btn>
+        <v-btn color="red mr-1" flat>Click me</v-btn>
+        <v-btn flat color="red mr-1">Click me</v-btn>
+
+        <v-btn class="bg-indigo">
+          <v-icon size="large" color="yellow" icon="mdi-email" left></v-icon>
+          <span>E-mail</span>
+        </v-btn>
+        <v-btn block class="bg-red mt-2" outlined>Block Button</v-btn>
+        <v-btn icon="mdi-calendar" size="x-large" class="bg-red mt-2"></v-btn>
+      </v-row>
+    </div>
+  </div>
+</template>
+
+
+--------------------------------------- Breakpoints & Visibility ---------------------------------------
+Breakpoint je sirina ekrana na kojoj se menja prikaz u aplikaciji.
+Vuetify ima predefinisane breakpoint-e i njih zadajemo sa xs, sm, md, lg i xl.
+U odnosu na sirinu ekrana prikaze mozemo da prikazujemo ili sakrivamo sa: hidden-{breakpoint}-{condition}
+condition moze da bude: only,and-down i and-up.
+      <!-- sakrij ovaj btn na md velicinama ekrana i manjim (and-down). Ovo ce sakriti btn na ekranima uzim od 1280px-->
+      <v-btn class="hidden-md-and-down">Click me - ekran je siri od 1280px</v-btn>
+      <!-- ovo sakriva dugme na ekranima sirim od 960px. md je od 960 do 1280px -->
+      <v-btn class="hidden-md-and-up">Click me - ekran je uzi od 960px</v-btn>
+
+
+--------------------------------------- Toolbar ---------------------------------------
+U projektu Toolbar se kreira kao komponenta () i onda se prikazuje u App.vue.
+Po defaultu toolbox koristi flexbox. Ako imamo dva elementa koja zelimo da razdvojimo mozemo da stavimo spacer izmedju njih i on ce zauzeti celokupan slobodna prostor.
+    <v-toolbar>
+      <v-toolbar-title class="text-uppercase text-grey"><span class="font-weight-light">Todo</span><span class="text-uppercase">Ninja</span> </v-toolbar-title>
+      <v-spacer></v-spacer>
+      <v-btn class="bg-grey">
+        <span>Sign Out</span>
+        <v-icon class="ml-2">mdi-export</v-icon>
+      </v-btn>
+    </v-toolbar>
+
+
+--------------------------------------- Navigation drawers ---------------------------------------
+Vidljivost drawer-a se kontrolise programski sa v-model. Po defaultu je sakriven pa u v-model mora da se prosledi varijabla cija je vrednost true. Kada se klikne negde izvan drawer-a on se sakriva.
+Da bi dobili dugme na koje se klikne da se otvori drawer koristi se <v-app-bar-nav-icon> i dobija se hamburger button.
+<v-app-bar-nav-icon class="text-grey" @click="drawer = !drawer"></v-app-bar-nav-icon> - draver je varijabla koja je na pocetku drawer = false.
+
+
+--------------------------------------- Themes ---------------------------------------
+U fajlu vuetify.js mozemo da definisemo boje kojima overridujemo vrednosti koje su definisane u vuetify-u za te nazive koje overridujemo. Kasnije mozemo da koristimo te nazive da bi koristili boje koje smo definisali.
+import { createVuetify } from 'vuetify';
+
+const myCustomLightTheme = {
+  dark: false,
+  colors: {
+    primary: '#9652ff', // ljubicasta
+    success: '#3cd1c2', // zelena
+    info: '#ffaa2c', // crvena
+    error: '#f83e70', // zuto-narandzasta
+    secondary: '#03DAC6',
+    warning: '#FB8C00',
+  },
+};
+
+export default createVuetify({
+  theme: {
+    defaultTheme: 'myCustomLightTheme',
+    themes: {
+      myCustomLightTheme,
+    },
+  },
+});
+
+U komponentama se ove custom definisane boje pozivaju sa color="primary".
+
+--------------------------------------- Lists ---------------------------------------
+Za renderovanje listi u browseru se koristi v-list iz vuetify-a. Jedna stavka u listi je v-item i u njega se stavlja v-for sa kojim se iterira kroz listu i za svaki element u listi se prikazuje po jedan v-for.
+
+    <v-list>
+      <v-list-item v-for="i in 5" :key="i">
+        <v-list-item-content>
+          <v-list-item-title>List item {{ i }}</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+    </v-list>
+
+Ovde se prolazi kroz listu i od svakog clana liste se kreira stavka u draver meniju koji je i link ka drugoj stranici. Ovaj draver islazi iz leve strane ekrana.
+Ako zelimo da na nekom elementu u vuetify-u koristimo router onda on mora da se doda kao prop na tom elementu. Npr. dole se sa ( router :to="link.route") na svaki item u listi dodaje da koristi router a sa to="/..." kazemo na koji url vodi taj link. 
+
+<template
+<v-navigation-drawer v-model="drawer" color="primary">
+    <v-list>
+      <v-list-item v-for="item in links" :key="item.route" router :to="link.route">
+        <v-list-item-icon
+          ><v-icon>{{ item.icon }}</v-icon></v-list-item-icon
+        >
+        <v-list-item-content class="ml-3">{{ item.text }}</v-list-item-content>
+      </v-list-item>
+    </v-list>
+  </v-navigation-drawer>
+</template>
+
+<script>
+export default {
+  name: 'NavbarComp',
+  data() {
+    return {
+      drawer: false,
+      links: [
+        { icon: 'mdi-view-dashboard', text: 'Dashboard', route: '/' },
+        { icon: 'mdi-folder', text: 'My Projects', route: '/projects' },
+        { icon: 'mdi-account', text: 'Team', route: '/team' },
+      ],
+    };
+  },
+};
+</script>
+
+
+--------------------------------------- Padding and Margin ---------------------------------------
+Padding i margin se setuju u obliku {property}{direction}-{size}.
+Property za padding je p a za margin je m.
+direction: t (top), l (left), r (right), b (bottom), x (spacing levo i desno), y (spacing gore i dole), a (spacing na sve 4 strane).
+Primer: mx-2 - margina se dodaje levo i desno i velicine je 2
+size - moze da bude 0,1,2,3,4,5 ili auto. 0 je najmanje. auto spacing je auto. Velicina spacinga je size * 0.25
+
+Element <v-container> sadrzaj drzi na serdini stranice i malo je suzen - slicno kao klasa container u bootstrapu. Sve sto stavimo u v-container bice maksimalno siroko onoliko koliko je sirok kontejner.
+Ako zelimo da v-container bude sirine cele stranice onda mu dodajemo prop fluid - <v-container fluid >.
+v-container pazi na sirinu stranice - suzava i siri sadrzaj po potrebi i drzi ga u sredini.
+
+
+--------------------------------------- Grid system ---------------------------------------
+Vuetify ima grid sistem od 12 kolona/delova koji koristi flex-box.
+Struktura layouta u vuetify-u je v-container>>v-layout>>v-row i svaki od ovih elemenata je flex-box.
+v-row je red sa sadrzajem.
+    <v-container fluid class="my-5">
+      <!-- v-layout v-row - ovo znaci da je ovo red sa sadrzajem koji moze biti rasporedjen u 12 kolona/elemenata -->
+      <!-- svaki od 12 elemenata je jedan v-col i za svaki se odredjuje gde ce biti pozicioniran i kolika ce mu biti sirina. Npr v-col cols="6" znaci da element zauzima 6 kolona tj. pola viewporta/ekrana. v-col se odredjuje za razlicite sirine ekrana -->
+      <!-- v-col xs=12 sm=6 md=4 lg=3 - sve ovo je za jedan element i znaci: za ekstra small ekran ovo ce biti sirine 12 kolona, za small ekran ovo ce biti 6, za medium ce biti 4, za large ekran ce biti sirine 3 kolone. -->
+      <!-- v-col offset-md="2" znaci da ce na medium ce biti pomereno od leve ivice za 2 kolone -->
+      <!-- cols="12" sa ovime dobijamo da se element prebaci u novi red ako ne moze da stane u red u kome je vec -->
+      <v-row>
+        <v-col cols="12" xs="12" md="6">
+          <v-btn block color="primary">1</v-btn>
+        </v-col>
+        <v-col cols="12" xs="12" md="2">
+          <v-btn block color="primary">2</v-btn>
+        </v-col>
+        <v-col cols="12" xs="12" md="2">
+          <v-btn block color="primary">3</v-btn>
+        </v-col>
+        <v-col cols="12" xs="12" md="2">
+          <v-btn block color="primary">4</v-btn>
+        </v-col>
+      </v-row> 
+      <!-- ova dva v-btn ne zauzimaju celu sirinu a sa justify (justify-lg="space-between" justify-md="space-around") dobijamo da se rasporedi prostor oko njih. Kada je md velicina onda se slobodan prostor rasporedjue levo i desno od btn. Kada je lg onda je sav slobodan prostor izmadju njih - oba btn se pomere na levu i desnu ivicu ekrana. -->
+      <v-row justify-lg="space-between" justify-md="space-around">
+        <v-col cols="12" xs="4" md="3">
+          <v-btn block color="info">1</v-btn>
+        </v-col>
+        <v-col cols="12" xs="4" md="3">
+          <v-btn block color="info">2</v-btn>
+        </v-col>
+      </v-row>
+    </v-container>
+
+
+--------------------------------------- Forms ---------------------------------------
+Komponenta koja se koristi za forme je <v-form>. U <v-form> se stavlja @submit.prevent da bi se sprecio default submit forme jer on brise podatke iz forme.
+<v-text-field v-model="title" label="Title"></v-text-field>
+U v-form ne postoji input tag nego se koristi <v-text-field> i u ovaj tag se stavlja i label.
+Za bi-direkciono povezivanje input polja sa varijabljam koristi se v-model iz vue-a.
+Da bi se dodala ikonica u input field ne mora da se koristi <v-icon> nego u <v-text--field> moze da se doda prop prepend-icon="".
+
+Ovo je input polje u kojem se prikazuje datepicker: <v-text-field type="date" v-model="due" label="Due date"></v-text-field>
+
+Validacija podataka
+Validacija podataka se obavlja tako sto se u input tag doda :rules="inputRules" a inputRules se definise u data(){} i to je niz pravila za validaciju. Svako pravilo je funkcija u kojoj se proverava da li je uneti podatak dobar. Svaki put kada korisnik unese neki podatak poziva se ova funkcija i ako je podatak dobar onda ne vraca nista a ako nije dobar onda vraca error message koji je definisan u funkciji.
+
+<template>
+  <div class="text-center">
+    <v-dialog v-model="dialog" max-width="600px">
+      <template v-slot:activator="{ props }">
+        <v-btn color="success" v-bind="props">Add a new project</v-btn>
+      </template>
+
+      <v-card style="overflow: hidden">
+        <v-card-title>Add a new project</v-card-title>
+        <v-card-text>
+          <v-form class="px-3" @submit.prevent ref="form">
+            <v-text-field v-model="title" label="Title" @keyup="changed" prepend-icon="mdi-folder" :rules="inputRules"></v-text-field>
+            <v-textarea v-model="content" label="Information" prepend-icon="mdi-pencil" :rules="inputRules"></v-textarea>
+            <!-- Vuetify 3.0.0 nema v-date-picker pa datum mora da se uzima sa  -->
+            <v-text-field type="date" v-model="due" label="Due date" :rules="inputRules"></v-text-field>
+            <v-row justify="space-between">
+              <v-col cols="4"><v-btn flat color="success" @click="submit">Add project</v-btn></v-col>
+              <v-col cols="4"><v-btn color="info" block @click="dialog = false">Close Dialog</v-btn></v-col>
+            </v-row>
+          </v-form>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'PopupComp',
+  data() {
+    return {
+      dialog: false,
+      title: '',
+      content: '',
+      due: new Date().toISOString().substring(0, 10),
+      inputRules: [
+        (v) => v.length >= 3 || 'Minimum length is 3 characters', // ako je evaluacija thruthy onda se ignorise a ako je falsy onda se vraca error message
+      ],
+    };
+  },
+  methods: {
+    async submit() {
+      console.log(this.title, this.content, new Date(this.due).toISOString().substring(0, 10));
+      let isValid = await this.$refs.form.validate().then((res) => res.valid);
+      // ako su uneti podaci validni (isValid === true) ide se na kreiranje objekta od unetih podataka
+      if (isValid) {
+        console.log('Form isValid: ', isValid);
+      }
+    },
+    changed() {
+      console.log(this.title);
+    },
+  },
+};
+</script>
+
+
+-------------------------------------------- Firestore database --------------------------------------------
+https://console.firebase.google.com/u/0/ - projekti
+
+Prvo treba otici na sajt firebase i kreirati novu bazu i kolekciju.
+Povezivanje sa firebase:
+1. uci u folder projekta i instalirati firebase: npm install firebase
+2. ide se na firebase sajt i u settings projekta/baze koja je kreirana. Tu treba naci config podesavanja. 
+3. u root-u projekta se kreira fajl firebase.js i u njega se kopiraju config podesavanja. Treba dodati i importe. Ovo dole je u firebase.js fajlu
+
+------ firebase.js - pocetak ------
+import * as firebase from 'firebase/app';
+import { getFirestore } from 'firebase/firestore';
+
+const firebaseConfig = {
+  apiKey: 'AIzaSyBconVhg0LhCbyKS9Qn3ogtAb4uNxfTf8E',
+  authDomain: 'todo-ninja-test.firebaseapp.com',
+  projectId: 'todo-ninja-test',
+  storageBucket: 'todo-ninja-test.appspot.com',
+  messagingSenderId: '606136361581',
+  appId: '1:606136361581:web:f5ace0abb75c68d2aa5564',
+};
+firebase.initializeApp(firebaseConfig);
+const db = getFirestore();
+export default db;
+------ firebase.js - kraj ------
+
+import 'firebase/firestore'; - ovo se uvozi jer koristimo firestore (bazu).
+Kada se klikne na dugme 'Add project' u formi podaci trebaju da se posalju u firebase bazu.
+
+Metoda submit() se izvrsana nakon klika na 'Add project'.
+  methods: {
+    async submit() {
+      console.log(this.title, this.content, new Date(this.due).toISOString().substring(0, 10));
+      // pokrece se loading animacija na dugmetu
+      this.loading = true;
+
+      let isValid = await this.$refs.form.validate().then((res) => res.valid);
+      // ako su uneti podaci validni (isValid === true) ide se na kreiranje objekta od unetih podataka
+      if (isValid) {
+        console.log('Form isValid: ', isValid);
+        const project = {
+          title: this.title,
+          content: this.content,
+          person: 'Person - new project',
+          due: this.due,
+          status: 'ongoing',
+          projectId: Date.now().toString(),
+        };
+
+        // sada se objekat salje u firebase
+        // db je ime projekta na firebase - 'todo-ninja-test'
+        // 'projects' je ime kolekcije
+        // project.projectId - id dokumenta i ovo je timestamp - Date.now().toString()
+        // setDoc(doc(db, 'projects', project.projectId), project) - sa ovime se dokument dodaje u kolekciju na firebase-u
+        // .then() - posto je ovo asinhrona operacija dodaje se then(). Saljemo zahtev da se dokument doda u kolekciju i kao odgovor dobijamo promise. Ceka se insert u kolekciju i tek kada se on dogodi okida se then()
+        await setDoc(doc(db, 'projects', project.projectId), project)
+          .then(() => {
+            console.log('project added');
+            // zaustavlja se loading animacija na dugmetu
+            this.loading = false;
+
+            // zatvara se forma-dialog
+            this.dialog = false;
+			
+            // emituje se event da bi se prikazao snackbar (poruka). Ovaj event se hvata u Navbar komponenti i u ovoj komponenti je v-snackbar
+            this.$emit('projectAdded');
+          })
+          .catch((err) => {
+            // zaustavlja se loading animacija na dugmetu
+            this.loading = false;
+            throw Error(err.message);
+          });
+      }
+    },
+  },
+  
+ -- Komponenta Popup.vue sadrzi formu i ona se injectuj u drawer. Dugme 'Add new project' je u draweu i kada se klikne na njega na sredini ekrana se otvara v-card u kome je forma.
+ <template>
+  <div class="text-center">
+    <v-dialog v-model="dialog" max-width="600px">
+      <template v-slot:activator="{ props }">
+        <v-btn color="success" v-bind="props">Add a new project</v-btn>
+      </template>
+
+      <v-card style="overflow: hidden">
+        <v-card-title>Add a new project</v-card-title>
+        <v-card-text>
+          <v-form class="px-3" @submit.prevent ref="form">
+            <v-text-field v-model="title" label="Title" @keyup="changed" prepend-icon="mdi-folder" :rules="inputRules"></v-text-field>
+            <v-textarea v-model="content" label="Information" prepend-icon="mdi-pencil" :rules="inputRules"></v-textarea>
+            <!-- Vuetify 3.0.0 nema v-date-picker pa datum mora da se uzima sa v-text-field type="date" -->
+            <v-text-field type="date" v-model="due" label="Due date" :rules="inputRules"></v-text-field>
+            <v-row justify="space-between">
+              <v-col cols="4"><v-btn flat color="success" @click="submit" :loading="loading">Add project</v-btn></v-col>
+              <v-col cols="4"><v-btn color="info" block @click="dialog = false">Close Dialog</v-btn></v-col>
+            </v-row>
+          </v-form>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+  </div>
+</template>
+
+-------------------------------------------- Firestore real-time listeners --------------------------------------------
+
+
+    <!-- sa v-for="n in 200" dobijamo to da se kreira 200 v-card elemenata i ucitava se 200 slika sa https://picsum.photos  -->
+    <v-col v-for="n in 200" cols="3" :key="n">
+      <v-card>
+        <v-img :src="`https://picsum.photos/500/300?image=${n * 5 + 10}`" />
+      </v-card>
+    </v-col>

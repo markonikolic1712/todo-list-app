@@ -1,5 +1,42 @@
 <template>
   <v-container>
+    <v-row class="pa-3">
+      <v-col cols="6">
+        <v-row>
+          <v-col cols="5">
+            <v-row justify="space-around" class="pl-2">
+              <v-text-field
+                label="Search by title"
+                v-model="searchByTitle"
+                @input="search"
+              ></v-text-field>
+            </v-row>
+          </v-col>
+          <v-col cols="5">
+            <v-row justify="space-around" class="pl-2">
+              <v-text-field
+                label="Search by description"
+                v-model="searchByDescription"
+                @input="search"
+              ></v-text-field>
+            </v-row>
+          </v-col>
+        </v-row>
+      </v-col>
+      <v-col cols="4">
+        <v-row>
+          <v-col>
+            <v-row>
+              <v-checkbox
+                label="Show just completed"
+                v-model="completed"
+                @change="searchCompleted"
+              />
+            </v-row>
+          </v-col>
+        </v-row>
+      </v-col>
+    </v-row>
     <v-table theme="dark">
       <thead>
         <tr>
@@ -73,13 +110,44 @@
 </template>
 
 <script setup>
-import { computed, onMounted } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { useStore } from "vuex";
 
 const store = useStore();
-const itemList = computed(() => store.getters.todoList);
+//const allItems = computed(() => store.getters.todoList);
+const itemList = ref([]);
+const searchByTitle = ref("");
+const searchByDescription = ref("");
+const completed = ref(false);
+
+const search = () => {
+  itemList.value = store.getters.todoList.filter(
+    (item) =>
+      item.title.toLowerCase().includes(searchByTitle.value.toLowerCase()) &&
+      item.title.toLowerCase().includes(searchByDescription.value.toLowerCase())
+  );
+};
+
+const searchCompleted = () => {
+  if (completed.value) {
+    itemList.value = itemList.value.filter((item) => item.completedAt != null);
+  } else {
+    itemList.value = store.getters.todoList.filter(
+      (item) =>
+        item.title.toLowerCase().includes(searchByTitle.value.toLowerCase()) &&
+        item.title
+          .toLowerCase()
+          .includes(searchByDescription.value.toLowerCase())
+    );
+  }
+};
+
+// watch(completed, () => {
+//   }
+// );
 
 onMounted(() => {
   store.dispatch("setTodoList");
+  itemList.value = store.getters.todoList;
 });
 </script>

@@ -2,7 +2,6 @@ import api from "./axiosconfig";
 
 async function getAllTodo() {
   const response = await api.GET("/all");
-  console.log(response);
   return response;
 }
 
